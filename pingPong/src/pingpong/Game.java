@@ -13,13 +13,21 @@ import java.util.Random;
  */
 public class Game {
     private Random random = new Random();
-    private static int bat1 = 50;
-    private static int bat2 = 50;
-    private static MyPoint ball = new MyPoint(300, 300);
-    private static MyPoint target = new MyPoint(0, 0);
-    private double[] math = {0, 0, 0, 0, 0};
-    private double course = 4.58318;//random.nextDouble();
-    private static int pixel = 20;
+    private static int bat1;
+    private static int bat2;
+    private static MyPoint ball;
+    private static MyPoint target;
+    private static int pixel = 5;
+    private double[] triangl = {0, 0, 0};
+    private double course;
+    
+    public void newGame(){
+        bat1 = 50;
+        bat2 = 50;
+        ball = new MyPoint(500, 500);
+        course = random.nextDouble()* 2 * Math.PI;
+        target = newTarget();
+    }
     
     public int getPixel(){
         return pixel;
@@ -30,24 +38,16 @@ public class Game {
     }
     
     public void moveUpBat1(){
-        /*bat1--;
+        bat1--;
         if (bat1 < 0){
             bat1 = 0;
-        }*/
-        course = course + 0.1;
-        if(course >= 2*Math.PI){
-            course = 0;
         }
     }
     
     public void moveDownBat1(){
-        /*bat1++;
+        bat1++;
         if (bat1 > 100){
             bat1 = 100;
-        }*/
-        course = course - 0.1;
-        if(course < 0){
-            course = 2*Math.PI;
         }
     }
     
@@ -82,44 +82,35 @@ public class Game {
     }
     
     public void moveBall(){
+        ball.setX(ball.getX() - (int)(triangl[0] / 100.));
+        ball.setY(ball.getY() - (int)(triangl[1] / 100.));
         
-        
-        checkBounce();
+       // newTarget();
     }
     
-    private void checkBounce(){
-        
+    private MyPoint newTarget(){
         /*
         *0 - rozdíl x (a)
         *1 - rozdíl y (b)
         *2 - přepona (c)
-        *3 - úhel a
-        *4 - úhlel b
         */
-        
-        if (course < 1.571 || course > 4.712){
-            math[1] = 9.35 * pixel - ball.getY();//dolní hranice
+        if (course < 0.5 * Math.PI || course > 1.5 * Math.PI){// <90, >270 horní okraj
+            triangl[1] = ball.getY();
         }
         else{
-            math[1] = ball.getY() - 1.25 * pixel;//horní hranice
+            triangl[1] = ball.getY() - 1000;
         }
-        math[0] = (int)(Math.tan(course) * math[1]);//course * Math.PI / 180
-        
-        if(ball.getX()-math[0] < 3 * pixel){//levá hranice
-            math[0] = ball.getX() - 3 * pixel;
-            math[1] = (int)(1/Math.tan(course) * math[0]);
+        triangl[0] = Math.tan(course) * triangl[1];
+        if((int)(ball.getX()-triangl[0]) < 0){
+            triangl[0] = ball.getX();
+            triangl[1] = triangl[0] / Math.tan(course);
         }
-        else if(ball.getX()-math[0] > 40* pixel){
-            math[0] = 40 * pixel - ball.getX();
-            math[1] = (int)(1/Math.tan(course) * math[0]);
-            System.out.println("vpravo");
+        else if((int)(ball.getX()-triangl[0]) > 1000){
+            triangl[0] = ball.getX() - 1000;
+            triangl[1] = triangl[0] / Math.tan(course);
         }
-        
-        target = new MyPoint((int)(ball.getX()-math[0]), (int)(ball.getY()-math[1]));
-        //math[2] = Math.sqrt(Math.pow(math[0], 2) + Math.pow(math[1], 2));
-        
-        System.out.println(target + " - " + course);
-        //System.out.println(math[0]);
+        triangl[2] = Math.sqrt(Math.pow(triangl[0], 2) + Math.pow(triangl[1], 2));
+        return new MyPoint((int)(ball.getX()-triangl[0]), (int)(ball.getY()-triangl[1]));
     }
     
     public MyPoint getTarget(){

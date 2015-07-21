@@ -6,6 +6,7 @@
 package pingpong;
 
 import javafx.animation.KeyFrame;
+import javafx.animation.PathTransition;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -13,7 +14,12 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -29,17 +35,29 @@ public class PingPong extends Application {
     @Override
     public void start(Stage primaryStage) {
         
-        StackPane root = new StackPane();
-        Scene scene = new Scene(root, 700, 500);
+        Pane root = new Pane();
+        Scene scene = new Scene(root, 750, 450);
         
         Canvas canvas = new Canvas(scene.getWidth(), scene.getHeight());
         final GraphicsContext gc = canvas.getGraphicsContext2D();
         canvas.widthProperty().bind(scene.widthProperty());
         canvas.heightProperty().bind(scene.heightProperty());
         
-        //gm.setBall(new MyPoint((int)canvas.getWidth() / 2 - drw.getPixel()/3, (int)canvas.getHeight() / 2 - drw.getPixel()/3));
+        final Rectangle rectPath = new Rectangle (0, 0, 40, 40);
+        rectPath.setArcHeight(10);
+        rectPath.setArcWidth(10);
+        rectPath.setFill(Color.ORANGE);
+        Path path = new Path();
+        PathTransition pathTransition = new PathTransition();
+        pathTransition.setPath(path);
+        pathTransition.setNode(rectPath);
+        ball(path, pathTransition);
+        //pathTransition.setCycleCount(Timeline.INDEFINITE);
         
-        Timeline timer = new Timeline(new KeyFrame(Duration.millis(100), (ActionEvent event) -> { //10
+        
+        gm.newGame();
+        
+        Timeline timer = new Timeline(new KeyFrame(Duration.millis(10), (ActionEvent event) -> {
             if(keys[0]){
                 gm.moveUpBat1();
             }
@@ -80,6 +98,9 @@ public class PingPong extends Application {
                 case ESCAPE:
                     primaryStage.close();
                     break;
+                case F5:
+                    gm.newGame();
+                    break;
                     
                 default:
                     break;
@@ -104,11 +125,20 @@ public class PingPong extends Application {
                     break;
             }
         });
+
         
+        //pathTransition.setAutoReverse(true);
+        
+        
+        
+        
+        pathTransition.play();
         root.getChildren().add(canvas);
+        root.getChildren().add(rectPath);
         primaryStage.setTitle("PingPong");
         primaryStage.setScene(scene);
         primaryStage.show();
+        
     }
 
     /**
@@ -116,6 +146,18 @@ public class PingPong extends Application {
      */
     public static void main(String[] args) {
         launch(args);
+    }
+    
+    private void ball(Path path, PathTransition pathTransition){
+        //while(true){
+            path.getElements().add(new MoveTo(400, 400));
+            path.getElements().add(new LineTo(200., 200.));
+            pathTransition.setDuration(Duration.millis(4000));
+            
+            path.getElements().add(new MoveTo(400, 400));
+            path.getElements().add(new LineTo(200., 200.));
+            pathTransition.setDuration(Duration.millis(4000));
+        //}
     }
     
 }
