@@ -25,7 +25,7 @@ public class Game {
         bat1 = 50;
         bat2 = 50;
         ball = new MyPoint(500, 500);
-        course = random.nextDouble()* 2 * Math.PI;
+        course = random.nextDouble() * 2 * Math.PI;
         target = newTarget();
     }
     
@@ -81,19 +81,55 @@ public class Game {
         ball = p;
     }
     
-    public void moveBall(){
-        ball.setX(ball.getX() - (int)(triangl[0] / 100.));
-        ball.setY(ball.getY() - (int)(triangl[1] / 100.));
+    public void bounce(){
+        ball.setPoint(target);
+        if (course < 0.5 * Math.PI && course > 0){
+            if(ball.getX() == 0){
+                course =  2 * Math.PI - course;
+            }
+            else{
+                course = Math.PI - course;
+            }
+        }
+        else if (course < Math.PI && course > 0.5 * Math.PI){
+            if (ball.getX() == 0){
+                course =  2 * Math.PI - course;
+            }
+            else{
+                course = Math.PI - course;
+            }
+        }
+        else if (course < 1.5 * Math.PI && course > Math.PI){
+            //course = course - Math.PI / 2;
+            if(ball.getX() == 1000){
+                course = course - 2 * (course - Math.PI);
+            }
+            else{
+                course = 3 * Math.PI - course;
+            }
+        }
+        else if (course < 2 * Math.PI && course > 1.5 * Math.PI){
+            if(ball.getX() == 1000){
+                course = course - 2 * (course - Math.PI);
+            }
+            else{
+                course = 3 * Math.PI - course;
+            }
+        }
         
-       // newTarget();
+        
+        
+        
+        target = newTarget();
     }
-    
+
     private MyPoint newTarget(){
         /*
         *0 - rozdíl x (a)
         *1 - rozdíl y (b)
         *2 - přepona (c)
         */
+        //course = random.nextDouble()* 2 * Math.PI;
         if (course < 0.5 * Math.PI || course > 1.5 * Math.PI){// <90, >270 horní okraj
             triangl[1] = ball.getY();
         }
@@ -111,6 +147,10 @@ public class Game {
         }
         triangl[2] = Math.sqrt(Math.pow(triangl[0], 2) + Math.pow(triangl[1], 2));
         return new MyPoint((int)(ball.getX()-triangl[0]), (int)(ball.getY()-triangl[1]));
+    }
+    
+    public double getWay(){
+        return (triangl[2]);
     }
     
     public MyPoint getTarget(){

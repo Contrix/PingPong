@@ -83,5 +83,13 @@ public class Drawing {
         return pixel;
     }
     
+    public int getMoveX(){
+        return moveX;
+    }
+    
+    public int getMoveY(){
+        return moveY;
+    }
+    
     
 }

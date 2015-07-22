@@ -5,6 +5,7 @@
  */
 package pingpong;
 
+import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.PathTransition;
 import javafx.animation.Timeline;
@@ -19,7 +20,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -30,6 +31,7 @@ import javafx.util.Duration;
 public class PingPong extends Application {
     private Drawing drw = new Drawing();
     private Game gm = new Game();
+    
     
     private boolean[] keys = {false, false, false, false};
     @Override
@@ -43,17 +45,12 @@ public class PingPong extends Application {
         canvas.widthProperty().bind(scene.widthProperty());
         canvas.heightProperty().bind(scene.heightProperty());
         
-        final Rectangle rectPath = new Rectangle (0, 0, 40, 40);
-        rectPath.setArcHeight(10);
-        rectPath.setArcWidth(10);
-        rectPath.setFill(Color.ORANGE);
+        final Circle circle = new Circle(0, 0, 8);
+        circle.setFill(Color.ORANGE);
         Path path = new Path();
         PathTransition pathTransition = new PathTransition();
         pathTransition.setPath(path);
-        pathTransition.setNode(rectPath);
-        ball(path, pathTransition);
-        //pathTransition.setCycleCount(Timeline.INDEFINITE);
-        
+        pathTransition.setNode(circle);
         
         gm.newGame();
         
@@ -72,9 +69,14 @@ public class PingPong extends Application {
                 gm.moveDownBat2();
             }
             
-            gm.moveBall();
+            //gm.moveBall();
             
             drw.drawAll(gc, canvas.getWidth(), canvas.getHeight());
+            if(pathTransition.getStatus() == Animation.Status.STOPPED){
+                circle.setRadius(drw.getPixel()/2);
+                ball(path, pathTransition);
+                System.out.println("go");
+            }
         }));
         timer.setCycleCount(Timeline.INDEFINITE);
         timer.play();
@@ -126,15 +128,8 @@ public class PingPong extends Application {
             }
         });
 
-        
-        //pathTransition.setAutoReverse(true);
-        
-        
-        
-        
-        pathTransition.play();
         root.getChildren().add(canvas);
-        root.getChildren().add(rectPath);
+        root.getChildren().add(circle);
         primaryStage.setTitle("PingPong");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -149,15 +144,15 @@ public class PingPong extends Application {
     }
     
     private void ball(Path path, PathTransition pathTransition){
-        //while(true){
-            path.getElements().add(new MoveTo(400, 400));
-            path.getElements().add(new LineTo(200., 200.));
-            pathTransition.setDuration(Duration.millis(4000));
-            
-            path.getElements().add(new MoveTo(400, 400));
-            path.getElements().add(new LineTo(200., 200.));
-            pathTransition.setDuration(Duration.millis(4000));
-        //}
+        path.getElements().clear();    
+        path.getElements().add(new MoveTo(44 * drw.getPixel() / 1000. * gm.getBall().getX() + 2.5 * drw.getPixel() + drw.getMoveX(), 26.7 * drw.getPixel() / 1000. * gm.getBall().getY() + 1.15 * drw.getPixel() + drw.getMoveY()));
+       
+        //path.getElements().add(new MoveTo(200, 50));
+        //path.getElements().add(new LineTo(400., 400.));
+        path.getElements().add(new LineTo(44 * drw.getPixel() / 1000. * gm.getTarget().getX() + 2.5 * drw.getPixel() + drw.getMoveX(), 26.7 * drw.getPixel() / 1000. * gm.getTarget().getY() + 1.15 * drw.getPixel() + drw.getMoveY()));
+        pathTransition.setDuration(Duration.millis(gm.getWay() * 1.5));
+        pathTransition.play();
+        gm.bounce();
     }
     
 }
