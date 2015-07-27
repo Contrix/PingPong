@@ -20,6 +20,8 @@ public class Game {
     private static int pixel = 5;
     private double[] triangl = {0, 0, 0};
     private double course;
+    private boolean gameOver = false;
+    private String text = "";
     
     public void newGame(){
         bat1 = 50;
@@ -27,6 +29,7 @@ public class Game {
         ball = new MyPoint(500, 500);
         course = random.nextDouble() * 2 * Math.PI;
         target = newTarget();
+        gameOver = false;
     }
     
     public int getPixel(){
@@ -82,25 +85,34 @@ public class Game {
     }
     
     public void bounce(){
+        if(ball.getX() == 0 && (26.7 * pixel / 1000. * ball.getY() + 1.15 * pixel  + pixel/2) > (23.5 * pixel / 100. * bat1 + 1.15 * pixel) && (26.7 * pixel / 1000. * ball.getY() + 1.15 * pixel  + pixel/2) < (23.5 * pixel / 100. * bat1 + 5.15 * pixel)){
+            System.out.println("pálka1");
+        }
+        else if(ball.getX() == 0){
+            gameOver = true;
+            text = "Hráč 1 prohrál";
+            System.out.println(text);
+        }
+        if(ball.getX() == 1000 && (26.7 * pixel / 1000. * ball.getY() + 1.15 * pixel  + pixel/2) > (23.5 * pixel / 100. * bat2 + 1.15 * pixel) && (26.7 * pixel / 1000. * ball.getY() + 1.15 * pixel  + pixel/2) < (23.5 * pixel / 100. * bat2 + 5.15 * pixel)){
+            System.out.println("pálka2");
+        }
+        else if(ball.getX() == 1000){
+            gameOver = true;
+            text = "Hráč 2 prohrál";
+            System.out.println(text);
+        }
+        
+
         ball.setPoint(target);
-        if (course < 0.5 * Math.PI && course > 0){
+        if (course < Math.PI && course > 0){
             if(ball.getX() == 0){
-                course =  2 * Math.PI - course;
+                course =  2 * Math.PI - course;  
             }
             else{
                 course = Math.PI - course;
             }
         }
-        else if (course < Math.PI && course > 0.5 * Math.PI){
-            if (ball.getX() == 0){
-                course =  2 * Math.PI - course;
-            }
-            else{
-                course = Math.PI - course;
-            }
-        }
-        else if (course < 1.5 * Math.PI && course > Math.PI){
-            //course = course - Math.PI / 2;
+        else if (course < 2 * Math.PI && course > Math.PI){
             if(ball.getX() == 1000){
                 course = course - 2 * (course - Math.PI);
             }
@@ -108,18 +120,6 @@ public class Game {
                 course = 3 * Math.PI - course;
             }
         }
-        else if (course < 2 * Math.PI && course > 1.5 * Math.PI){
-            if(ball.getX() == 1000){
-                course = course - 2 * (course - Math.PI);
-            }
-            else{
-                course = 3 * Math.PI - course;
-            }
-        }
-        
-        
-        
-        
         target = newTarget();
     }
 
@@ -155,5 +155,13 @@ public class Game {
     
     public MyPoint getTarget(){
         return target;
+    }
+    
+    public String getText(){
+        return text;
+    }
+    
+    public boolean getGameOver(){
+        return gameOver;
     }
 }

@@ -6,6 +6,7 @@
 package pingpong;
 
 import javafx.animation.Animation;
+import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.PathTransition;
 import javafx.animation.Timeline;
@@ -51,31 +52,32 @@ public class PingPong extends Application {
         PathTransition pathTransition = new PathTransition();
         pathTransition.setPath(path);
         pathTransition.setNode(circle);
-        
+        pathTransition.setInterpolator(Interpolator.LINEAR);
         gm.newGame();
         
         Timeline timer = new Timeline(new KeyFrame(Duration.millis(10), (ActionEvent event) -> {
-            if(keys[0]){
-                gm.moveUpBat1();
+            if(!gm.getGameOver()){
+                if(keys[0]){
+                    gm.moveUpBat1();
+                }
+                else if(keys[1]){
+                    gm.moveDownBat1();
+                }
+                if(keys[2]){
+                    gm.moveUpBat2();
+                }
+                else if(keys[3]){
+                    gm.moveDownBat2();
+                }
+                drw.drawAll(gc, canvas.getWidth(), canvas.getHeight());
+                if(pathTransition.getStatus() == Animation.Status.STOPPED){
+                    circle.setRadius(drw.getPixel()/2);
+                    ball(path, pathTransition);
+                }
             }
-            else if(keys[1]){
-                gm.moveDownBat1();
-            }
-            
-            if(keys[2]){
-                gm.moveUpBat2();
-            }
-            else if(keys[3]){
-                gm.moveDownBat2();
-            }
-            
-            //gm.moveBall();
-            
-            drw.drawAll(gc, canvas.getWidth(), canvas.getHeight());
-            if(pathTransition.getStatus() == Animation.Status.STOPPED){
-                circle.setRadius(drw.getPixel()/2);
-                ball(path, pathTransition);
-                System.out.println("go");
+            else{
+                pathTransition.stop();
+                drw.drawAll(gc, canvas.getWidth(), canvas.getHeight());
             }
         }));
         timer.setCycleCount(Timeline.INDEFINITE);
@@ -145,12 +147,10 @@ public class PingPong extends Application {
     
     private void ball(Path path, PathTransition pathTransition){
         path.getElements().clear();    
-        path.getElements().add(new MoveTo(44 * drw.getPixel() / 1000. * gm.getBall().getX() + 2.5 * drw.getPixel() + drw.getMoveX(), 26.7 * drw.getPixel() / 1000. * gm.getBall().getY() + 1.15 * drw.getPixel() + drw.getMoveY()));
-       
-        //path.getElements().add(new MoveTo(200, 50));
-        //path.getElements().add(new LineTo(400., 400.));
-        path.getElements().add(new LineTo(44 * drw.getPixel() / 1000. * gm.getTarget().getX() + 2.5 * drw.getPixel() + drw.getMoveX(), 26.7 * drw.getPixel() / 1000. * gm.getTarget().getY() + 1.15 * drw.getPixel() + drw.getMoveY()));
+        path.getElements().add(new MoveTo(44 * drw.getPixel() / 1000. * gm.getBall().getX() + 3 * drw.getPixel() + drw.getMoveX(), 26.7 * drw.getPixel() / 1000. * gm.getBall().getY() + 1.65 * drw.getPixel() + drw.getMoveY()));
+        path.getElements().add(new LineTo(44 * drw.getPixel() / 1000. * gm.getTarget().getX() + 3 * drw.getPixel() + drw.getMoveX(), 26.7 * drw.getPixel() / 1000. * gm.getTarget().getY() + 1.65 * drw.getPixel() + drw.getMoveY()));
         pathTransition.setDuration(Duration.millis(gm.getWay() * 1.5));
+        
         pathTransition.play();
         gm.bounce();
     }
