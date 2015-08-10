@@ -21,7 +21,9 @@ public class Game {
     private double[] triangl = {0, 0, 0};
     private double course;
     private boolean gameOver = false;
-    private String text = "";
+    private static String text = "";
+    private static int[] points = {0, 0};
+    private boolean deduction =  false;
     
     public void newGame(){
         bat1 = 50;
@@ -30,6 +32,19 @@ public class Game {
         course = random.nextDouble() * 2 * Math.PI;
         target = newTarget();
         gameOver = false;
+        text = "";
+        points[0] = 0;
+        points[1] = 0;
+    }
+    
+    public void newRound(){
+        bat1 = 50;
+        bat2 = 50;
+        ball = new MyPoint(500, 500);
+        course = random.nextDouble() * 2 * Math.PI;
+        target = newTarget();
+        gameOver = false;
+        text = "";
     }
     
     public int getPixel(){
@@ -86,20 +101,20 @@ public class Game {
     
     public void bounce(){
         if(ball.getX() == 0 && (26.7 * pixel / 1000. * ball.getY() + 1.15 * pixel  + pixel/2) > (23.5 * pixel / 100. * bat1 + 1.15 * pixel) && (26.7 * pixel / 1000. * ball.getY() + 1.15 * pixel  + pixel/2) < (23.5 * pixel / 100. * bat1 + 5.15 * pixel)){
-            System.out.println("pálka1");
+
         }
         else if(ball.getX() == 0){
             gameOver = true;
-            text = "Hráč 1 prohrál";
-            System.out.println(text);
+            text = "Player 2 win";
+            points[1]++;
         }
         if(ball.getX() == 1000 && (26.7 * pixel / 1000. * ball.getY() + 1.15 * pixel  + pixel/2) > (23.5 * pixel / 100. * bat2 + 1.15 * pixel) && (26.7 * pixel / 1000. * ball.getY() + 1.15 * pixel  + pixel/2) < (23.5 * pixel / 100. * bat2 + 5.15 * pixel)){
-            System.out.println("pálka2");
+
         }
         else if(ball.getX() == 1000){
             gameOver = true;
-            text = "Hráč 2 prohrál";
-            System.out.println(text);
+            text = "Player 1 win";
+            points[0]++;
         }
         
 
@@ -161,7 +176,28 @@ public class Game {
         return text;
     }
     
+    public void setText(String s){
+        text = s;
+    }
+    
     public boolean getGameOver(){
         return gameOver;
     }
+    
+    public void setGameOver(){
+        gameOver = !gameOver;
+    }
+    
+    public int[] getPoints(){
+        return points;
+    }
+    
+    public void setDeduction(){
+        deduction = !deduction;
+    }
+    
+    public boolean getDeduction(){
+        return deduction;
+    }
+    
 }

@@ -78,10 +78,20 @@ public class PingPong extends Application {
             else{
                 pathTransition.stop();
                 drw.drawAll(gc, canvas.getWidth(), canvas.getHeight());
+                if(!gm.getDeduction()){
+                    gm.setDeduction();
+                    pokus();
+                }
+                if(gm.getText().equals("")){
+                    gm.newRound();
+                    gm.setDeduction();
+                }
             }
         }));
         timer.setCycleCount(Timeline.INDEFINITE);
         timer.play();
+        
+        
         
         
         scene.addEventHandler(KeyEvent.KEY_PRESSED, (KeyEvent e) -> {
@@ -155,4 +165,26 @@ public class PingPong extends Application {
         gm.bounce();
     }
     
+    private void pokus(){
+        Timeline timeline1 = new Timeline(new KeyFrame(
+        Duration.millis(2000),
+        ae -> gm.setText("3")));
+        timeline1.play();
+        
+        Timeline timeline2 = new Timeline(new KeyFrame(
+        Duration.millis(3000),
+        ae -> gm.setText("2")));
+        timeline2.play();
+        
+        Timeline timeline3 = new Timeline(new KeyFrame(
+        Duration.millis(4000),
+        ae -> gm.setText("1")));
+        timeline3.play();
+        
+        Timeline timeline4 = new Timeline(new KeyFrame(
+        Duration.millis(5000),
+        ae -> gm.setText("")));
+        timeline4.play();
+    }
 }
+//1.0
