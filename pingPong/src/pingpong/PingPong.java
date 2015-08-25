@@ -32,7 +32,8 @@ import javafx.util.Duration;
 public class PingPong extends Application {
     private Drawing drw = new Drawing();
     private Game gm = new Game();
-    private boolean bot = false;
+    private boolean bot1 = true;
+    private boolean bot2 = true;
     
     
     private boolean[] keys = {false, false, false, false};
@@ -58,17 +59,38 @@ public class PingPong extends Application {
         
         Timeline timer = new Timeline(new KeyFrame(Duration.millis(10), (ActionEvent event) -> {
             if(!gm.getGameOver()){
-                if(keys[0]){
-                    gm.moveUpBat1();
+                if(!bot1){
+                    if(keys[0]){
+                        gm.moveUpBat1();
+                    }
+                    else if(keys[1]){
+                        gm.moveDownBat1();
+                    }
                 }
-                else if(keys[1]){
-                    gm.moveDownBat1();
+                else if(gm.getOldCourse() < Math.PI){
+                    if(gm.getBat1() * 10 - gm.getBall().getY() > 10){
+                        gm.moveUpBat1();
+                    }
+                    else if(gm.getBall().getY() - gm.getBat1() * 10 > 10){
+                        gm.moveDownBat1();
+                    }
                 }
-                if(keys[2]){
-                    gm.moveUpBat2();
+                
+                if(!bot2){
+                    if(keys[2]){
+                        gm.moveUpBat2();
+                    }
+                    else if(keys[3]){
+                        gm.moveDownBat2();
+                    }
                 }
-                else if(keys[3]){
-                    gm.moveDownBat2();
+                else if(gm.getOldCourse() > Math.PI){
+                    if(gm.getBat2() * 10 - gm.getBall().getY() > 10){
+                        gm.moveUpBat2();
+                    }
+                    else if(gm.getBall().getY() - gm.getBat2() * 10 > 10){
+                        gm.moveDownBat2();
+                    }
                 }
                 drw.drawAll(gc, canvas.getWidth(), canvas.getHeight());
                 if(pathTransition.getStatus() == Animation.Status.STOPPED){
@@ -110,8 +132,12 @@ public class PingPong extends Application {
                 case F5:
                     gm.newGame();
                     break;
-                case F6:
-                    bot = !bot;
+                case F7:
+                    bot1 = !bot1;
+                    break;
+                case F8:
+                    bot2 = !bot2;
+                    break;
                 default:
                     break;
             }

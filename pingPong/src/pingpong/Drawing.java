@@ -50,7 +50,7 @@ public class Drawing {
         gc.setFill(Color.WHITE);
         gc.setTextAlign(TextAlignment.LEFT);
         gc.setFont(Font.font(0.6 * pixel));
-        gc.fillText("v 1.0", pixel + moveX, 29.7*pixel + moveY);
+        gc.fillText("v 1.2", pixel + moveX, 29.7*pixel + moveY);
         
         gc.setTextAlign(TextAlignment.RIGHT);
         gc.fillText("© Jiří Hanák", 49*pixel + moveX, 29.7*pixel + moveY);

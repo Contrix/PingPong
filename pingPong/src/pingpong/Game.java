@@ -20,6 +20,7 @@ public class Game {
     private static int pixel = 20;
     private double[] triangl = {0, 0, 0};
     private double course;
+    private double oldCourse; //for bots
     private boolean gameOver = false;
     private static String text = "";
     private static int[] points = {0, 0};
@@ -36,6 +37,7 @@ public class Game {
         bat2 = 50;
         ball = new MyPoint(500, 500);
         course = random.nextDouble() * 2 * Math.PI;
+        oldCourse = course;
         target = newTarget();
     }
     
@@ -115,6 +117,7 @@ public class Game {
             points[0]++;
         }
         ball.setPoint(target);
+        oldCourse = course;
         if (course < Math.PI && course > 0){
             if(ball.getX() == 0){
                 course =  2 * Math.PI - course;  
@@ -148,11 +151,11 @@ public class Game {
             triangl[1] = ball.getY() - 1000;
         }
         triangl[0] = Math.tan(course) * triangl[1];
-        if((int)(ball.getX()-triangl[0]) < 0){
+        if((int)(ball.getX() - triangl[0]) < 0){
             triangl[0] = ball.getX();
             triangl[1] = triangl[0] / Math.tan(course);
         }
-        else if((int)(ball.getX()-triangl[0]) > 1000){
+        else if((int)(ball.getX() - triangl[0]) > 1000){
             triangl[0] = ball.getX() - 1000;
             triangl[1] = triangl[0] / Math.tan(course);
         }
@@ -196,4 +199,7 @@ public class Game {
         return deduction;
     }
     
+    public double getOldCourse(){
+        return oldCourse;
+    }
 }
