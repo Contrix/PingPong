@@ -32,11 +32,9 @@ import javafx.util.Duration;
 public class PingPong extends Application {
     private Drawing drw = new Drawing();
     private Game gm = new Game();
-    private boolean bot1 = true;
+    private boolean bot1 = false;
     private boolean bot2 = true;
     
-    
-    private boolean[] keys = {false, false, false, false};
     @Override
     public void start(Stage primaryStage) {
         
@@ -60,35 +58,35 @@ public class PingPong extends Application {
         Timeline timer = new Timeline(new KeyFrame(Duration.millis(10), (ActionEvent event) -> {
             if(!gm.getGameOver()){
                 if(!bot1){
-                    if(keys[0]){
+                    if(gm.getKeys()[0]){
                         gm.moveUpBat1();
                     }
-                    else if(keys[1]){
+                    else if(gm.getKeys()[1]){
                         gm.moveDownBat1();
                     }
                 }
-                else if(gm.getOldCourse() < Math.PI){
-                    if(gm.getBat1() * 10 - gm.getBall().getY() > 10){
+                else if(gm.getCourse() < Math.PI){
+                    if(gm.getBat1() * 10 - gm.getTarget().getY() > 10){
                         gm.moveUpBat1();
                     }
-                    else if(gm.getBall().getY() - gm.getBat1() * 10 > 10){
+                    else if(gm.getTarget().getY() - gm.getBat1() * 10 > 10){
                         gm.moveDownBat1();
                     }
                 }
                 
                 if(!bot2){
-                    if(keys[2]){
+                    if(gm.getKeys()[2]){
                         gm.moveUpBat2();
                     }
-                    else if(keys[3]){
+                    else if(gm.getKeys()[3]){
                         gm.moveDownBat2();
                     }
                 }
-                else if(gm.getOldCourse() > Math.PI){
-                    if(gm.getBat2() * 10 - gm.getBall().getY() > 10){
+                else if(gm.getCourse() > Math.PI){
+                    if(gm.getBat2() * 10 - gm.getTarget().getY() > 10){
                         gm.moveUpBat2();
                     }
-                    else if(gm.getBall().getY() - gm.getBat2() * 10 > 10){
+                    else if(gm.getTarget().getY() - gm.getBat2() * 10 > 10){
                         gm.moveDownBat2();
                     }
                 }
@@ -114,16 +112,16 @@ public class PingPong extends Application {
         scene.addEventHandler(KeyEvent.KEY_PRESSED, (KeyEvent e) -> {
             switch(e.getCode()){
                 case W:
-                    keys[0] = true;
+                    gm.getKeys()[0] = true;
                     break;
                 case S:
-                    keys[1] = true;
+                    gm.getKeys()[1] = true;
                     break;
                 case UP:
-                    keys[2] = true;
+                    gm.getKeys()[2] = true;
                     break;
                 case DOWN:
-                    keys[3] = true;
+                    gm.getKeys()[3] = true;
                     break;
                     
                 case ESCAPE:
@@ -146,16 +144,16 @@ public class PingPong extends Application {
         scene.addEventHandler(KeyEvent.KEY_RELEASED, (KeyEvent e) -> {
             switch(e.getCode()){
                 case W:
-                    keys[0] = false;
+                    gm.getKeys()[0] = false;
                     break;
                 case S:
-                    keys[1] = false;
+                    gm.getKeys()[1] = false;
                     break;
                 case UP:
-                    keys[2] = false;
+                    gm.getKeys()[2] = false;
                     break;
                 case DOWN:
-                    keys[3] = false;
+                    gm.getKeys()[3] = false;
                     break;
                 default:
                     break;
@@ -178,13 +176,16 @@ public class PingPong extends Application {
     }
     
     private void ball(Path path, PathTransition pathTransition){
-        path.getElements().clear();    
-        path.getElements().add(new MoveTo(44 * drw.getPixel() / 1000. * gm.getBall().getX() + 3 * drw.getPixel() + drw.getMoveX(), 26.7 * drw.getPixel() / 1000. * gm.getBall().getY() + 1.65 * drw.getPixel() + drw.getMoveY()));
-        path.getElements().add(new LineTo(44 * drw.getPixel() / 1000. * gm.getTarget().getX() + 3 * drw.getPixel() + drw.getMoveX(), 26.7 * drw.getPixel() / 1000. * gm.getTarget().getY() + 1.65 * drw.getPixel() + drw.getMoveY()));
-        pathTransition.setDuration(Duration.millis(gm.getWay() * 1.5));
-        
-        pathTransition.play();
         gm.bounce();
+        //if(!gm.getGameOver()){
+            path.getElements().clear();    
+            path.getElements().add(new MoveTo(44 * drw.getPixel() / 1000. * gm.getBall().getX() + 3 * drw.getPixel() + drw.getMoveX(), 26.7 * drw.getPixel() / 1000. * gm.getBall().getY() + 1.65 * drw.getPixel() + drw.getMoveY()));
+            path.getElements().add(new LineTo(44 * drw.getPixel() / 1000. * gm.getTarget().getX() + 3 * drw.getPixel() + drw.getMoveX(), 26.7 * drw.getPixel() / 1000. * gm.getTarget().getY() + 1.65 * drw.getPixel() + drw.getMoveY()));
+            pathTransition.setDuration(Duration.millis(gm.getWay() * 1.5));
+
+            pathTransition.play();
+        //}
+        
     }
     
     private void resetBall(Path path, PathTransition pathTransition){
@@ -219,9 +220,5 @@ public class PingPong extends Application {
         Duration.millis(5000),
         ae -> gm.play()));
         timeline4.play();
-    }
-    
-    private void bot(){
-        
     }
 }

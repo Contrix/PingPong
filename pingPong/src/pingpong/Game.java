@@ -20,11 +20,11 @@ public class Game {
     private static int pixel = 20;
     private double[] triangl = {0, 0, 0};
     private double course;
-    private double oldCourse; //for bots
     private boolean gameOver = false;
     private static String text = "";
     private static int[] points = {0, 0};
     private boolean deduction =  false;
+    private boolean[] keys = {false, false, false, false};
     
     public void newGame(){
         newRound();
@@ -36,9 +36,8 @@ public class Game {
         bat1 = 50;
         bat2 = 50;
         ball = new MyPoint(500, 500);
+        target = new MyPoint(500, 500);
         course = random.nextDouble() * 2 * Math.PI;
-        oldCourse = course;
-        target = newTarget();
     }
     
     public void play(){
@@ -95,11 +94,8 @@ public class Game {
         return(ball);
     }
     
-    public void setBall(MyPoint p){
-        ball = p;
-    }
-    
     public void bounce(){
+        ball.setPoint(target);
         if(ball.getX() == 0 && (26.7 * pixel / 1000. * ball.getY() + 1.15 * pixel  + pixel/2) > (23.5 * pixel / 100. * bat1 + 1.15 * pixel) && (26.7 * pixel / 1000. * ball.getY() + 1.15 * pixel  + pixel/2) < (23.5 * pixel / 100. * bat1 + 5.15 * pixel)){
 
         }
@@ -116,11 +112,20 @@ public class Game {
             text = "Player 1 win";
             points[0]++;
         }
-        ball.setPoint(target);
-        oldCourse = course;
         if (course < Math.PI && course > 0){
             if(ball.getX() == 0){
                 course =  2 * Math.PI - course;  
+                if(keys[0]){
+                    if(2 * Math.PI - 0.6 > course){
+                        course =  course + 0.3;
+                    }
+                }
+                else if (keys[1]){
+                    if(Math.PI + 0.6 < course){
+                        course =  course - 0.3;
+                    }
+                }
+
             }
             else{
                 course = Math.PI - course;
@@ -129,6 +134,16 @@ public class Game {
         else if (course < 2 * Math.PI && course > Math.PI){
             if(ball.getX() == 1000){
                 course = course - 2 * (course - Math.PI);
+                if(keys[2]){
+                    if(0.6 > course){
+                        course = course - 0.3;
+                    }
+                }
+                else if (keys[3]){
+                    if(Math.PI - 0.6 > course){
+                        course = course + 0.3;
+                    }
+                }
             }
             else{
                 course = 3 * Math.PI - course;
@@ -143,7 +158,6 @@ public class Game {
         *1 - rozdíl y (b)
         *2 - přepona (c)
         */
-        //course = random.nextDouble()* 2 * Math.PI;
         if (course < 0.5 * Math.PI || course > 1.5 * Math.PI){// <90, >270
             triangl[1] = ball.getY();
         }
@@ -199,7 +213,11 @@ public class Game {
         return deduction;
     }
     
-    public double getOldCourse(){
-        return oldCourse;
+    public double getCourse(){
+        return course;
+    }
+    
+    public boolean[] getKeys(){
+        return keys;
     }
 }
