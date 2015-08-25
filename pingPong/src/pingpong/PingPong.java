@@ -32,6 +32,7 @@ import javafx.util.Duration;
 public class PingPong extends Application {
     private Drawing drw = new Drawing();
     private Game gm = new Game();
+    private boolean bot = false;
     
     
     private boolean[] keys = {false, false, false, false};
@@ -39,7 +40,7 @@ public class PingPong extends Application {
     public void start(Stage primaryStage) {
         
         Pane root = new Pane();
-        Scene scene = new Scene(root, 750, 450);
+        Scene scene = new Scene(root, 1000, 600);
         
         Canvas canvas = new Canvas(scene.getWidth(), scene.getHeight());
         final GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -80,18 +81,12 @@ public class PingPong extends Application {
                 drw.drawAll(gc, canvas.getWidth(), canvas.getHeight());
                 if(!gm.getDeduction()){
                     gm.setDeduction();
-                    pokus();
-                }
-                if(gm.getText().equals("")){
-                    gm.newRound();
-                    gm.setDeduction();
+                    deduction();
                 }
             }
         }));
         timer.setCycleCount(Timeline.INDEFINITE);
         timer.play();
-        
-        
         
         
         scene.addEventHandler(KeyEvent.KEY_PRESSED, (KeyEvent e) -> {
@@ -115,7 +110,8 @@ public class PingPong extends Application {
                 case F5:
                     gm.newGame();
                     break;
-                    
+                case F6:
+                    bot = !bot;
                 default:
                     break;
             }
@@ -165,10 +161,22 @@ public class PingPong extends Application {
         gm.bounce();
     }
     
-    private void pokus(){
+    private void resetBall(Path path, PathTransition pathTransition){
+        path.getElements().clear();
+        path.getElements().add(new MoveTo(44 * drw.getPixel() / 1000. * gm.getBall().getX() + 3 * drw.getPixel() + drw.getMoveX(), 26.7 * drw.getPixel() / 1000. * gm.getBall().getY() + 1.65 * drw.getPixel() + drw.getMoveY()));
+        path.getElements().add(new LineTo(44 * drw.getPixel() / 1000. * gm.getBall().getX() + 3 * drw.getPixel() + drw.getMoveX(), 26.7 * drw.getPixel() / 1000. * gm.getBall().getY() + 1.65 * drw.getPixel() + drw.getMoveY()));
+        pathTransition.setDuration(Duration.millis(1));
+        
+        pathTransition.play();
+    }
+    
+    private void deduction(){
         Timeline timeline1 = new Timeline(new KeyFrame(
         Duration.millis(2000),
-        ae -> gm.setText("3")));
+        ae -> {
+            gm.newRound();
+            gm.setText("3");
+                }));
         timeline1.play();
         
         Timeline timeline2 = new Timeline(new KeyFrame(
@@ -183,8 +191,11 @@ public class PingPong extends Application {
         
         Timeline timeline4 = new Timeline(new KeyFrame(
         Duration.millis(5000),
-        ae -> gm.setText("")));
+        ae -> gm.play()));
         timeline4.play();
     }
+    
+    private void bot(){
+        
+    }
 }
-//1.0

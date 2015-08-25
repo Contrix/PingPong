@@ -17,7 +17,7 @@ public class Game {
     private static int bat2;
     private static MyPoint ball;
     private static MyPoint target;
-    private static int pixel = 5;
+    private static int pixel = 20;
     private double[] triangl = {0, 0, 0};
     private double course;
     private boolean gameOver = false;
@@ -26,13 +26,7 @@ public class Game {
     private boolean deduction =  false;
     
     public void newGame(){
-        bat1 = 50;
-        bat2 = 50;
-        ball = new MyPoint(500, 500);
-        course = random.nextDouble() * 2 * Math.PI;
-        target = newTarget();
-        gameOver = false;
-        text = "";
+        newRound();
         points[0] = 0;
         points[1] = 0;
     }
@@ -43,7 +37,11 @@ public class Game {
         ball = new MyPoint(500, 500);
         course = random.nextDouble() * 2 * Math.PI;
         target = newTarget();
+    }
+    
+    public void play(){
         gameOver = false;
+        deduction = false;
         text = "";
     }
     
@@ -116,8 +114,6 @@ public class Game {
             text = "Player 1 win";
             points[0]++;
         }
-        
-
         ball.setPoint(target);
         if (course < Math.PI && course > 0){
             if(ball.getX() == 0){
@@ -145,7 +141,7 @@ public class Game {
         *2 - přepona (c)
         */
         //course = random.nextDouble()* 2 * Math.PI;
-        if (course < 0.5 * Math.PI || course > 1.5 * Math.PI){// <90, >270 horní okraj
+        if (course < 0.5 * Math.PI || course > 1.5 * Math.PI){// <90, >270
             triangl[1] = ball.getY();
         }
         else{

@@ -41,12 +41,19 @@ public class Drawing {
         gc.setLineWidth(pixel/7);
         gc.setFont(Font.font(4 * pixel));
         gc.setTextAlign(TextAlignment.RIGHT);
-        gc.setFill(Color.GREEN);
         gc.strokeText(Integer.toString(gm.getPoints()[0]), 20*pixel + moveX, 5*pixel + moveY);
         gc.setTextAlign(TextAlignment.LEFT);
         gc.strokeText(Integer.toString(gm.getPoints()[1]), 30*pixel + moveX, 5*pixel + moveY);
         gc.setTextAlign(TextAlignment.CENTER);
         gc.strokeText(gm.getText(), 25 * pixel + moveX, 15 * pixel + moveY);
+        
+        gc.setFill(Color.WHITE);
+        gc.setTextAlign(TextAlignment.LEFT);
+        gc.setFont(Font.font(0.6 * pixel));
+        gc.fillText("v 1.0", pixel + moveX, 29.7*pixel + moveY);
+        
+        gc.setTextAlign(TextAlignment.RIGHT);
+        gc.fillText("© Jiří Hanák", 49*pixel + moveX, 29.7*pixel + moveY);
     }
     
     private void drawBats(GraphicsContext gc){
@@ -60,11 +67,11 @@ public class Drawing {
         //pixel = (int)height / 30;
         while (height > 30 * pixel){
             pixel++;
-            //System.out.println("plus" + pixel);
+            System.out.println("plus" + pixel);
         }
-        while (height < 29 * pixel){
+        while (height <= 29 * pixel){
             pixel--;
-            //System.out.println("mínus" + pixel);
+            System.out.println("mínus" + pixel);
         }
 
         //System.out.println(width + " - " + height);
